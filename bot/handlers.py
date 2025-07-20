@@ -3,8 +3,7 @@ import logging
 
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from core.history import save_user_message
-from llm.chat import get_llm_response
+from llm.chat import run_llm_with_history
 
 
 # ============== Código =============== #
@@ -28,9 +27,7 @@ def register_handlers(app: Client):
         text = message.text
 
         # Exemplo de resposta simples
-        save_user_message(user_id, "user", text)
-        response = get_llm_response(user_id, text)
-        save_user_message(user_id, "bot", response)
+        response = run_llm_with_history(user_id, text)
         # Exemplo de resposta simples
 
         await message.reply_text(response)
