@@ -1,0 +1,10 @@
+[
+  {
+    "role": "user",
+    "message": "oi"
+  },
+  {
+    "role": "bot",
+    "message": "Oi! Tudo bem? Como posso ajudar você hoje?"
+  }
+]
