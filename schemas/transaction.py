@@ -9,9 +9,9 @@ class TransactionType(str, Enum):
 
 
 class TransactionBase(BaseModel):
-    description: str
+    description: str 
     value: float
-    category_id: int
+    category: str
     date: date
     is_credit: bool
     is_fixed_expense: bool
