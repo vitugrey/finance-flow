@@ -1,9 +1,11 @@
 from fastapi import FastAPI
-from .routers import transaction
+from api.database.database import Base, engine
+from api.routers import transaction
 
-app = FastAPI()
-app.include_router(transaction.router, prefix="/transactions", tags=["transactions"])
+# Criar tabelas no DB
+Base.metadata.create_all(bind=engine)
 
-# from ..database.database import engine, Base
+app = FastAPI(title="FinanceFlow API")
 
-# Base.metadata.create_all(bind=engine)
+# Incluir rotas
+app.include_router(transaction.router)

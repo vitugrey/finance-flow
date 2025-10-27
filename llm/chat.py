@@ -5,13 +5,13 @@ from core.history import get_session_history
 from langchain_google_genai import ChatGoogleGenerativeAI  # trocar para uma llm local no futuro 
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.output_parsers import PydanticOutputParser
-from llm.prompt import prompt_generic, prompt_extract, prompt_output_parsers
-from schemas.transaction import TransactionBase
+from llm.prompt import prompt_generic, prompt_extract
+from api.schemas.transaction import TransactionBase
 
 
 # ============== llm =============== #
 llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
+    model="gemini-2.0-flash",
     google_api_key=GOOGLE_API_KEY,
 )
 
@@ -21,7 +21,6 @@ parser = PydanticOutputParser(
 # ============== runnubles =============== #
 runnable_generic = prompt_generic | llm
 runnable_extract = prompt_extract | llm
-runnable_output_parsers = prompt_output_parsers | llm
 
 runnable_generic_w_history = RunnableWithMessageHistory(
     runnable_generic,
@@ -37,13 +36,6 @@ runnable_extract_w_history = RunnableWithMessageHistory(
     history_messages_key="history",
 )
 
-runnable_output_parsers_w_history = RunnableWithMessageHistory(
-    runnable_output_parsers,
-    get_session_history,
-    input_messages_key="extracted_text",
-    history_messages_key="history",
-)
-
 
 # ============== funções=============== #
 def get_response_with_history(user_id: int, user_input: str):
@@ -53,17 +45,11 @@ def get_response_with_history(user_id: int, user_input: str):
 )
     return response.content
 
-def get_estructured_response(user_id: int, user_input: str):
-    response = runnable_extract_w_history.invoke(
+def get_estructured_json(user_id: int, user_input: str):
+    response = runnable_extract.invoke(
         {"extracted_text": user_input},
-        config={"configurable": {"session_id": user_id}},
     )
     return response.content
-
-def get_output_parsed_response(user_id: int, user_input: str):
-    llm_with_parser = llm.with_structured_output(TransactionBase)
-    response = llm_with_parser.invoke(user_input)
-    return response
 
 
 # def load_history_as_langchain_messages(user_id: int):

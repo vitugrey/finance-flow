@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime, date
 from enum import Enum
+from typing import Optional
 
 
 class TransactionType(str, Enum):
@@ -9,26 +10,22 @@ class TransactionType(str, Enum):
 
 
 class TransactionBase(BaseModel):
-    description: str 
+    description: Optional[str]
     value: float
     category: str
     date: date
+    transaction_type: TransactionType
     is_credit: bool
     is_fixed_expense: bool
-    transaction_type: TransactionType
 
 
 class TransactionCreate(TransactionBase):
     pass
 
 
-class TransactionUpdate(TransactionBase):
-    pass
-
-
 class TransactionSchema(TransactionBase):
     id: int
-    created_at: datetime
+    created_at: datetime #possivel erro
     updated_at: datetime
 
     class Config:
